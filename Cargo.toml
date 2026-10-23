@@ -1,0 +1,46 @@
+[package]
+name = "lumen-lite"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+description = "Keeps Corsair keyboard and mouse lighting on, without iCUE"
+license = "MIT"
+readme = "README.md"
+keywords = ["corsair", "rgb", "hid", "keyboard", "icue"]
+categories = ["hardware-support", "command-line-utilities"]
+autobins = false
+
+[[bin]]
+name = "lumen-lite"
+path = "src/main.rs"
+
+[[bin]]
+name = "lumen-lite-agent"
+path = "src/bin/agent.rs"
+
+[dependencies]
+anyhow = "1"
+hidapi = { version = "2.6", default-features = false, features = ["windows-native"] }
+humantime = "2"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+unwrap_used = "warn"
+expect_used = "warn"
+panic = "warn"
+dbg_macro = "warn"
+todo = "warn"
+# Every allow must say why (see CLAUDE.md conventions).
+allow_attributes_without_reason = "warn"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true
+# Nothing is meant to panic (unwrap/expect/panic are linted), so unwinding
+# only adds size. opt-level "s": it polls once every 2 s, so size beats speed.
+panic = "abort"
+opt-level = "s"
